@@ -4,20 +4,52 @@
     'height': '500',
     'width': '500',
     'zOffset': '10',
-    'draggable': true
+    'draggable': true,
+    'resizable': true
   };
   // will be the jquery selection of the images
   var images;
   var settings = {};
+  
+  var layerImages = function(image, count){
+    var el = $(image);
+    el.addClass('dragger-layer dragger-layer-' + (images.length - count));
+    el.data('layer', (images.length - count));
+    el.css({
+      'position': 'absolute',
+      'z-index': (settings.zOffset + images.length - count)
+    });
+  };
+  
+  var makeResizable = function(image){
+    var el = $(image)
+    if(el.hasClass('resizable')){
+      el.resizable();
+    };
+  };
+  
+  var makeDraggable = function(image){
+    var el = $(image)
+    if (el.hasClass('draggable') && !el.hasClass('resizable')){
+      el.draggable();
+    }
+    else if (el.hasClass('draggable') && el.hasClass('resizable')){
+      el.closest('.ui-wrapper').draggable();
+    };
+  };
+    
   var methods = {
     init: function(options) {
       settings = $.extend({}, defaults, options);
+      
       // lets do all our css manipulations
       images = this.children('img');
       if (images.length == 0) {
-        console.log('DPL - no images, aborting setup');
+        console.log('dragger - no images, aborting setup');
         return this
       }
+      
+      // setup css on the original container
       this.css({
         'display': 'block',
         'height': settings.height,
@@ -25,9 +57,9 @@
         'border': '1px solid black',
       });
 
-      images.wrapAll("<div id='dpl-drag-container' />");
-
-      this.children('#dpl-drag-container').css({
+      // wrap it all in a container and add css
+      images.wrapAll("<div id='dragger-drag-container' />");
+      this.children('#dragger-drag-container').css({
         'height': settings.height,
         'width': settings.width,
         'overflow': 'hidden',
@@ -36,26 +68,13 @@
         'left': 0
       });
 
-      // setup each image
+      // setup each image on top of one another
       images.each(function(i) {
-        el = $(this);
-        el.addClass('dpl-layer dpl-layer-' + (images.length - i));
-        el.data('layer', (images.length - i));
-        el.css({
-          'position': 'absolute',
-          'z-index': (settings.zOffset + images.length - i)
-        });
+        layerImages(this, i);
+        makeResizable(this);
+        makeDraggable(this);
       });
-
-      // make it draggable when the 
-      var draggable = images.filter('.draggable');
-      if (settings.draggable) {
-        if (draggable.length == 0) {
-          images.draggable();
-        } else {
-          draggable.draggable().removeClass('draggable');
-        }
-      }
+      
     },
     getData: function() {
       var data = {};
@@ -71,11 +90,12 @@
       return data;
     },
     changeLayerImage: function(layerNumber, newSource) {
-      images.filter('.dpl-layer-' + layerNumber).attr('src', newSource);
+      images.filter('.dragger-layer-' + layerNumber).attr('src', newSource);
     }
   };
 
-  $.fn.dragPhotoLayers = function(method) {
+  // nice pattern for calling methods
+  $.fn.dragger = function(method) {
     var el = this;
     // Method calling logic
     if (methods[method]) {

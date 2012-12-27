@@ -1,1 +1,5 @@
-$('#photo').dragPhotoLayers()
+$('#photo').dragger()
+
+
+
+$('.ui-wrapper').draggable()

@@ -2,16 +2,25 @@
 <html>
 <head>
   <title>Html5Photo</title>
+ <link rel="stylesheet" href="http://code.jquery.com/ui/1.9.2/themes/base/jquery-ui.css" />
 </head>
 <body>
 
 	<div id="photo">
+		<img class='draggable resizable' src='images/moustache.png'/>
 		<img class='draggable' src='images/moustache.png'/>
-		<img src='images/borat.jpg'>
+		<img class='resizable' src='images/borat.jpg'>
+		
 	</div>
+	
+
+		<img  id="test" src='images/borat.jpg'>
+
+	
 	<script src="js/jquery.js" type="text/javascript"></script>
 	<script src="js/jquery_ujs.js" type="text/javascript"></script>
-	<script src="js/jquery-draggable.js" type="text/javascript"></script>
+	<script src="js/jquery-draggable-resize.js" type="text/javascript"></script>
+	<script src="js/jQueryRotate.2.2.js" type="text/javascript"></script>
 	<script src="js/photopicker.js" type="text/javascript"></script>
 	<script src="js/application.js" type="text/javascript"></script>
 </body>
